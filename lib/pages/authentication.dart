@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:health_check_zen/utilities/constants.dart';
 import 'dart:async';
 
 import 'package:http/http.dart' as http;
@@ -83,7 +84,7 @@ class _AuthPageState extends State<AuthPage> {
     var data = json.decode(response.body);
     print(response.body);
     print(data);
-    if (data["success"]==false) {
+    if (data["success"] == false) {
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(
           content: Text("unable to log in with provided credentials"),
@@ -185,139 +186,185 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Widget _passwordTextField() {
-    return TextFormField(
-      controller: _passwordTextController,
-      style: TextStyle(
-        color: Colors.white.withOpacity(0.7),
-      ),
-      decoration: InputDecoration(
-        suffixIcon: IconButton(
-          icon: Icon(_obscurePassword ? Icons.remove_red_eye : Icons.lock),
-          color: Colors.white.withOpacity(0.7),
-          onPressed: () {
-            setState(() {
-              _obscurePassword = !_obscurePassword;
-            });
-          },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Password',
+          style: kLabelStyle,
         ),
-        // filled: true,
-        // fillColor: Colors.white.withOpacity(0.7),
-        focusedBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: Colors.white.withOpacity(0.7), width: 3),
-          borderRadius: BorderRadius.circular(10),
+        SizedBox(
+          height: 10.0,
         ),
-        enabledBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: Colors.white.withOpacity(0.7), width: 3),
-          borderRadius: BorderRadius.circular(10),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: 60.0,
+          child: TextFormField(
+            controller: _passwordTextController,
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.7),
+            ),
+            decoration: InputDecoration(
+              suffixIcon: IconButton(
+                icon:
+                    Icon(_obscurePassword ? Icons.remove_red_eye : Icons.lock),
+                color: Colors.white.withOpacity(0.7),
+                onPressed: () {
+                  setState(() {
+                    _obscurePassword = !_obscurePassword;
+                  });
+                },
+              ),
+              // filled: true,
+              // fillColor: Colors.white.withOpacity(0.7),
+              focusedBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: Colors.white.withOpacity(0.7), width: 3),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: Colors.white.withOpacity(0.7), width: 3),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              labelText: "password",
+              labelStyle: kHintTextStyle
+
+              // TextStyle(
+              //   color: Colors.white.withOpacity(0.7),
+              // )
+              ,
+            ),
+            obscureText: _obscurePassword ? true : false,
+            validator: (String value) {
+              if (value.isEmpty) {
+                return "Password too short";
+              }
+            },
+            onSaved: (String value) {
+              _authmode == AuthMode.login
+                  ? _loginFormData["password"] = value
+                  : _registerFormData["password"] = value;
+            },
+          ),
         ),
-        labelText: "password",
-        labelStyle: TextStyle(
-          color: Colors.white.withOpacity(0.7),
-        ),
-      ),
-      obscureText: _obscurePassword ? true : false,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return "Password too short";
-        }
-      },
-      onSaved: (String value) {
-        _authmode == AuthMode.login
-            ? _loginFormData["password"] = value
-            : _registerFormData["password"] = value;
-      },
+      ],
     );
   }
 
   Widget _nameTextField() {
-    return TextFormField(
-      style: TextStyle(
-        color: Colors.white.withOpacity(0.7),
-      ),
-      decoration: InputDecoration(
-        suffixIcon: Icon(
-          Icons.person_outline,
-          color: Colors.white.withOpacity(0.7),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Name',
+          style: kLabelStyle,
         ),
-        // filled: true,
-        // fillColor: Colors.white.withOpacity(0.7),
-        focusedBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: Colors.white.withOpacity(0.7), width: 3),
-          borderRadius: BorderRadius.circular(10),
+        SizedBox(
+          height: 10.0,
         ),
-        enabledBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: Colors.white.withOpacity(0.7), width: 3),
-          borderRadius: BorderRadius.circular(10),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: 60.0,
+          child: TextFormField(
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.7),
+            ),
+            decoration: InputDecoration(
+              suffixIcon: Icon(
+                Icons.person_outline,
+                color: Colors.white.withOpacity(0.7),
+              ),
+              // filled: true,
+              // fillColor: Colors.white.withOpacity(0.7),
+              focusedBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: Colors.white.withOpacity(0.7), width: 3),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: Colors.white.withOpacity(0.7), width: 3),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              labelText: "name",
+              labelStyle: TextStyle(
+                color: Colors.white.withOpacity(0.7),
+              ),
+            ),
+            validator: (String value) {
+              if (value.isEmpty) {
+                return "Please enter a valid name";
+              }
+            },
+            onSaved: (String value) {
+              _registerFormData["name"] = value;
+            },
+          ),
         ),
-        labelText: "name",
-        labelStyle: TextStyle(
-          color: Colors.white.withOpacity(0.7),
-        ),
-      ),
-      validator: (String value) {
-        if (value.isEmpty) {
-          return "Please enter a valid name";
-        }
-      },
-      onSaved: (String value) {
-        _registerFormData["name"] = value;
-      },
+      ],
     );
   }
 
   Widget _emailTextField() {
-    return TextFormField(
-      style: TextStyle(
-        color: Colors.white.withOpacity(0.7),
-      ),
-      decoration: InputDecoration(
-        suffixIcon: Icon(
-          Icons.email,
-          color: Colors.white.withOpacity(0.7),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Email',
+          style: kLabelStyle,
         ),
-        // filled: true,
-        // fillColor: Colors.white.withOpacity(0.7),
-        focusedBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: Colors.white.withOpacity(0.7), width: 3),
-          borderRadius: BorderRadius.circular(10),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: 60.0,
+          child: TextFormField(
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.7),
+            ),
+            decoration: InputDecoration(
+              suffixIcon: Icon(
+                Icons.email,
+                color: Colors.white.withOpacity(0.7),
+              ),
+              // filled: true,
+              // fillColor: Colors.white.withOpacity(0.7),
+              focusedBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: Colors.white.withOpacity(0.7), width: 3),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: Colors.white.withOpacity(0.7), width: 3),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              labelText: "email",
+              labelStyle: TextStyle(
+                color: Colors.white.withOpacity(0.7),
+              ),
+            ),
+            keyboardType: TextInputType.emailAddress,
+            validator: (String value) {
+              if (value.isEmpty ||
+                  !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                      .hasMatch(value)) {
+                return 'Please enter a valid email';
+              }
+            },
+            onSaved: (String value) {
+              _authmode == AuthMode.login
+                  ? _loginFormData["email_id"] = value
+                  : _registerFormData["email_id"] = value;
+            },
+          ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: Colors.white.withOpacity(0.7), width: 3),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        labelText: "email ID",
-        labelStyle: TextStyle(
-          color: Colors.white.withOpacity(0.7),
-        ),
-      ),
-      keyboardType: TextInputType.emailAddress,
-      validator: (String value) {
-        if (value.isEmpty ||
-            !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                .hasMatch(value)) {
-          return 'Please enter a valid email';
-        }
-      },
-      onSaved: (String value) {
-        _authmode == AuthMode.login
-            ? _loginFormData["email_id"] = value
-            : _registerFormData["email_id"] = value;
-      },
+      ],
     );
   }
-
-  // DecorationImage _buildBackgroundImage() {
-  //   return DecorationImage(
-  //     fit: BoxFit.cover,
-  //     image: AssetImage('assets/image.jpg'),
-  //   );
-  // }
 
   void _submitForm(final Map<String, dynamic> user) async {
     if (!_formKey.currentState.validate()) {
@@ -335,9 +382,22 @@ class _AuthPageState extends State<AuthPage> {
     return Scaffold(
       key: _scaffoldKey,
       body: Container(
+        // decoration: BoxDecoration(
+        //   // color: Colors.grey,//TODO:Need to change here
+        //   // image: _buildBackgroundImage(),
+        // ),
         decoration: BoxDecoration(
-          color: Colors.grey,
-          // image: _buildBackgroundImage(),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF398AE5),
+              Color(0xFF478DE0),
+              Color(0xFF478DE0),
+              Color(0xFF398AE5),
+            ],
+            stops: [0.1, 0.4, 0.7, 0.9],
+          ),
         ),
         padding: EdgeInsets.all(10.0),
         child: Center(
@@ -372,7 +432,14 @@ class _AuthPageState extends State<AuthPage> {
                           FlatButton(
                             child: Text(
                               'switch to ${_authmode == AuthMode.login ? 'register' : 'login'}',
-                              style: TextStyle(color: Colors.white),
+                              // style: TextStyle(color: Colors.white),
+                              style: TextStyle(
+                                color: Colors.white,
+                                letterSpacing: 1.5,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'OpenSans',
+                              ),
                             ),
                             onPressed: () {
                               setState(() {
@@ -392,11 +459,15 @@ class _AuthPageState extends State<AuthPage> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  color: Colors.white.withOpacity(0.3),
+                                  // color: Colors.white.withOpacity(0.3),
+                                  color: Color(0xFF527DAA),
                                   splashColor: Theme.of(context).accentColor,
                                   child: Text(
                                     '${_authmode == AuthMode.login ? 'LOGIN' : 'REGISTER'}',
-                                    style: TextStyle(fontSize: 15.0),
+                                    style: TextStyle(
+                                      fontSize: 15.0,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                   onPressed: () => _submitForm(user),
                                 ),
